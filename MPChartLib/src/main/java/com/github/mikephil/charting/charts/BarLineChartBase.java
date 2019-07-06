@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -88,6 +89,11 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
      * paint object for the (by default) lightgrey background of the grid
      */
     protected Paint mGridBackgroundPaint;
+
+    /**
+     * drawable object for the background of the grid
+     */
+    protected Drawable mGridBackgroundDrawable;
 
     protected Paint mBorderPaint;
 
@@ -536,7 +542,17 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (mDrawGridBackground) {
 
             // draw the grid background
-            c.drawRect(mViewPortHandler.getContentRect(), mGridBackgroundPaint);
+            if (mGridBackgroundDrawable != null) {
+                mGridBackgroundDrawable.setBounds(
+                        (int) mViewPortHandler.getContentRect().left,
+                        (int) mViewPortHandler.getContentRect().top,
+                        (int) mViewPortHandler.getContentRect().right,
+                        (int) mViewPortHandler.getContentRect().bottom
+                );
+                mGridBackgroundDrawable.draw(c);
+            } else {
+                c.drawRect(mViewPortHandler.getContentRect(), mGridBackgroundPaint);
+            }
         }
 
         if (mDrawBorders) {
@@ -1081,6 +1097,16 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
      */
     public void setGridBackgroundColor(int color) {
         mGridBackgroundPaint.setColor(color);
+    }
+
+    /**
+     * Sets the color for the background of the chart-drawing area (everything
+     * behind the grid lines).
+     *
+     * @param drawable
+     */
+    public void setGridBackground(Drawable drawable) {
+        mGridBackgroundDrawable = drawable;
     }
 
     /**
